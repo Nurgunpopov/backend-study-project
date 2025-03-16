@@ -8,3 +8,59 @@ services:
       - ./dbs/postgres-data:/var/lib/postgresql/data
     env_file:
       - db.env
+  
+  auth:
+    image: express-auth-backend
+    build:
+      context: ./auth
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - /var/www/apps/auth/node_modules
+    env_file:
+      - ./auth/.env.prod
+    depends_on:
+      - db
+
+  project:
+    image: express-project-backend
+    build:
+      context: ./project
+    restart: always
+    ports:
+      - 8001:8001
+    volumes:
+      - /var/www/apps/project/node_modules
+    env_file:
+      - ./project/.env.prod
+    depends_on:
+      - db
+
+  resume:
+    image: express-resume-backend
+    build:
+      context: ./resume
+    restart: always
+    ports:
+      - 8002:8002
+    volumes:
+      - /var/www/apps/resume/node_modules
+    env_file:
+      - ./resume/.env.prod
+    depends_on:
+      - db
+
+  request:
+    image: express-request-backend
+    build:
+      context: ./request
+    restart: always
+    ports:
+      - 8003:8003
+    volumes:
+      - /var/www/apps/request/node_modules
+    env_file:
+      - ./request/.env.prod
+    depends_on:
+      - db

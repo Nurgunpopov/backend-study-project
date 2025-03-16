@@ -4,8 +4,8 @@
     "main": "dist/index.js",
     "scripts": {
       "start": "node dist/index.js",
-      "dev": "npx tsx --env-file=.env --watch  src/index.ts",
-      "build": "tsx"
+      "dev": "npx tsx --watch  src/index.ts",
+      "build": "npx tsc"
     },
     "dependencies": {
       "express": "^4.21.2",

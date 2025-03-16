@@ -1,14 +1,16 @@
-// Конфигурация БД
 import { DataSource } from "typeorm"
+import dotenv from "dotenv"
+
+dotenv.config()
 
 const dataSource = new DataSource({
     type: "postgres",
-    host: "localhost",
-    port: 15432,
-    username: "maindb",
-    password: "maindb",
-    database: "maindb",
-    entities: ["src/models/*.js"],
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    entities: [process.env.DB_ENTITIES],
     logging: true,
     synchronize: true,
 });
