@@ -5,7 +5,7 @@ export class Resume extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({type: 'numeric'})
+    @Column({type: 'numeric', unique: true })
     bachelorId: number;
 
     @Column({type: 'varchar', length: 500})

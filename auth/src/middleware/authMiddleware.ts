@@ -1,4 +1,3 @@
-// Middleware для авторизации
 import jwt from 'jsonwebtoken';
 
 import settings from '../config/config';

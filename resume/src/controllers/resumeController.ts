@@ -8,22 +8,34 @@ class resumeController {
     }
 
     create = async (request: any, response: any) => {
-        // const { body, bachelor } = request
-        // body.bachelorId = bachelor.id
-        // const listData = request.body
-        // listData.bachelorId = request.bachelor.id
-
         const resumeData = request.body
-        const bachelorId = request.user.id
+        const userId = request.user.id
 
-        const dataToSave = {
-            ...resumeData,
-            bachelorId,
-        };
         try {
-            const resume = this.resumeService.create(dataToSave)
+            const resume = this.resumeService.create(resumeData, userId)
             
-            return response.send(resume)
+            response.send(resume)
+        } catch (error: any) {
+            response.status(400).send({ "error": error.message });
+        }
+    }
+
+    getAll = async (request: any, response: any) => {
+        try {
+            const allResume = await this.resumeService.getAll();
+
+            response.send(allResume);
+        } catch (error: any) {
+            response.status(400).send({ "error": error.message });
+        }
+    }
+
+    getByBachelorId = async (request: any, response: any) => {
+        const { bachelorId } = request.query.bachelorId;
+        try {
+            const resume = await this.resumeService.getByBachelorId(bachelorId);
+
+            response.send(resume);
         } catch (error: any) {
             response.status(400).send({ "error": error.message });
         }
@@ -34,7 +46,7 @@ class resumeController {
         try {
             const resume = await this.resumeService.getByID(id);
 
-            return response.send(resume);
+            response.send(resume);
         } catch (error: any) {
             response.status(400).send({ "error": error.message });
         }
@@ -46,7 +58,7 @@ class resumeController {
         try {
             const resume = await this.resumeService.update(id, body);
 
-            return response.send(resume);
+            response.send(resume);
         } catch (error: any) {
             response.status(400).send({ "error": error.message });
         }
@@ -57,7 +69,7 @@ class resumeController {
         try {
             await this.resumeService.delete(id);
 
-            return response.status(204).send({});
+            response.status(204).send({});
         } catch (error: any) {
             response.status(400).send({ "error": error.message });
         }
@@ -69,7 +81,7 @@ class resumeController {
 
     //     const result = await this.resumeRepository.findOneBy({ id });
 
-    //     return response.send(result);
+    //     response.send(result);
     // }
 
     // update = async (request: any, response: any) => {
@@ -84,7 +96,7 @@ class resumeController {
 
     //     const result = await this.resumeRepository.save(instance);
 
-    //     return response.send(result);
+    //     response.send(result);
     // }
 
     // delete = async (request: any, response: any) => {
@@ -94,7 +106,7 @@ class resumeController {
     //     const instance = await this.resumeRepository.findOneBy({ id });
     //     await this.resumeRepository.remove(instance);
 
-    //     return response.status(204).send({});
+    //     response.status(204).send({});
     // }
 
 }

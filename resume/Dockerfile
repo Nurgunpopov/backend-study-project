@@ -1,4 +1,4 @@
-FROM node:20 AS builder
+FROM node:22 AS builder
 
 ENV NODE_ENV production
 
@@ -10,7 +10,7 @@ RUN npm install --omit=optional
 RUN npm run build
 
 
-FROM node:20 AS prod
+FROM node:22 AS prod
 
 ENV NODE_ENV production
 

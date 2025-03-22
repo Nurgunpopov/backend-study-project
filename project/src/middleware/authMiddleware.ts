@@ -1,4 +1,3 @@
-// Middleware для авторизации
 import jwt from 'jsonwebtoken';
 
 import settings from '../config/config';
@@ -25,8 +24,6 @@ const authMiddleware = (request: any, response: any, next: any) => {
 
         return response.status(403).send({ message: "Forbidden: token is invalid or expired" });
     }
-
-    // await localhost:8000://
 }
 
 export default authMiddleware;

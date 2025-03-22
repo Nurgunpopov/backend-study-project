@@ -5,7 +5,7 @@ export class Bachelor extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({type: 'numeric'})
+    @Column({type: 'numeric', unique: true })
     userId: number;
 
     @Column({type: 'varchar', length: 10, nullable: true})

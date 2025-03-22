@@ -13,7 +13,17 @@ class bachelorController {
         try {
             const bachelor = this.bachelorService.create(bachelorData)
             
-            return response.send(bachelor)
+            response.send(bachelor)
+        } catch (error: any) {
+            response.status(400).send({ "error": error.message });
+        }
+    }
+    getByUserId = async (request: any, response: any) => {
+        const { userId } = request.query.userId;
+        try {
+            const bachelor = await this.bachelorService.getByUserId(userId);
+
+            response.send(bachelor);
         } catch (error: any) {
             response.status(400).send({ "error": error.message });
         }
@@ -24,7 +34,7 @@ class bachelorController {
         try {
             const bachelor = await this.bachelorService.getByID(id);
 
-            return response.send(bachelor);
+            response.send(bachelor);
         } catch (error: any) {
             response.status(400).send({ "error": error.message });
         }
@@ -36,7 +46,7 @@ class bachelorController {
         try {
             const bachelor = await this.bachelorService.update(id, body);
 
-            return response.send(bachelor);
+            response.send(bachelor);
         } catch (error: any) {
             response.status(400).send({ "error": error.message });
         }
@@ -47,7 +57,7 @@ class bachelorController {
         try {
             await this.bachelorService.delete(id);
 
-            return response.status(204).send({});
+            response.status(204).send({});
         } catch (error: any) {
             response.status(400).send({ "error": error.message });
         }
@@ -59,7 +69,7 @@ class bachelorController {
 
     //     const result = await this.bachelorRepository.findOneBy({ id });
 
-    //     return response.send(result);
+    //     response.send(result);
     // }
 
     // update = async (request: any, response: any) => {
@@ -74,7 +84,7 @@ class bachelorController {
 
     //     const result = await this.bachelorRepository.save(instance);
 
-    //     return response.send(result);
+    //     response.send(result);
     // }
 
     // delete = async (request: any, response: any) => {
@@ -84,7 +94,7 @@ class bachelorController {
     //     const instance = await this.bachelorRepository.findOneBy({ id });
     //     await this.bachelorRepository.remove(instance);
 
-    //     return response.status(204).send({});
+    //     response.status(204).send({});
     // }
 
 }

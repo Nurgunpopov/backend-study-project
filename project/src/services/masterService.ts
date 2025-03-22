@@ -1,19 +1,22 @@
 import { Master } from '../models/master'
-
+import dataSource from '../config/data-source';
 
 class MasterService {
+    private masterRepository = dataSource.getRepository(Master)
 
-    async create(masterData: any): Promise<Master | Error> {
-        const master = await Master.create(masterData);
-        const results = await Master.save(master)
-        if (results) {
-            return results;
+    async create(masterData: any): Promise<any | Error> {
+        const master = this.masterRepository.create(masterData);
+        await this.masterRepository.save(master)
+
+        const newUser = await this.masterRepository.findOne({ where: { userId: masterData.userId } }); 
+        if (newUser) {
+            return newUser;
         }
         throw new Error('Master creation failed');
     }
 
-    async getByID(id: number): Promise<Master | Error> {
-        const master = await Master.findOneBy({id})
+    async getByID(id: number): Promise<any | Error> {
+        const master = await this.masterRepository.findOneBy({id})
         if (master) {
             return master;
         }
@@ -21,12 +24,12 @@ class MasterService {
     }
     
     async update(id: number, body: any){
-        const instance = await Master.findOneBy({ id: id });
+        const instance = await this.masterRepository.findOneBy({ id: id });
         if (instance) {
             for (const key in body) {
                 instance[key] = body[key];
             }
-            await Master.save(instance);
+            await this.masterRepository.save(instance);
             return instance;
         } else {
             throw new Error(`Master with id ${id} not found`);
@@ -34,9 +37,9 @@ class MasterService {
     }
 
     async delete(id: number){
-        const res = await Master.findOneBy({ id: id })
+        const res = await this.masterRepository.findOneBy({ id: id })
         if (res) {
-            return await Master.remove(res)
+            return await this.masterRepository.remove(res)
         }
         throw new Error(`Something go wrong`)
     }

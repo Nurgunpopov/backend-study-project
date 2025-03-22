@@ -9,6 +9,12 @@ const controller = new projectController();
 router.route('')
     .post(authMiddleware, controller.create)
 
+router.route('/getall')
+    .get(authMiddleware, controller.getAll)
+
+router.route('/bachelorid')
+    .get(controller.getByBachelorId)
+
 router.route('/:id')
     .get(authMiddleware, controller.get)
 

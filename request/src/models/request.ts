@@ -22,4 +22,11 @@ export class Request extends BaseEntity {
 
     @Column({type: 'varchar', length: 20})
     status: String;
+
+    // Статусы:
+    // 1 - "Черновик"
+    // 2 - "В ожидании"
+    // 3 - "Приглашен в команду"
+    // 4 - "Приглашен по другому приоритету"
+    // 5 - "Проект уже сформирован"
 }

@@ -9,8 +9,11 @@ const controller = new projectController();
 router.route('')
     .post(authMiddleware, controller.create)
 
-router.route('')
-    .get(authMiddleware, controller.list)
+router.route('/getall')
+    .get(authMiddleware, controller.getAll)
+
+router.route('/changestatus/:id')
+    .patch(authMiddleware, controller.changeStatus)
 
 router.route('/:id')
     .get(authMiddleware, controller.get)

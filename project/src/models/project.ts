@@ -5,10 +5,10 @@ export class Project extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({type: 'numeric'})
+    @Column({type: 'numeric', unique: true })
     masterId: number;
 
-    @Column({type: 'numeric'})
+    @Column({type: 'numeric', nullable: true})
     userId: number;
 
     @Column({type: 'varchar', length: 100})
@@ -23,6 +23,15 @@ export class Project extends BaseEntity {
     @Column({type: 'numeric'})
     maxStudents: number;
 
-    // @Column({type: 'varchar', length: 20})
-    // status: string;
+    @Column({type: 'numeric'})
+    studentsAmount: number;
+
+    @Column({type: 'varchar', length: 20})
+    status: string;
+
+    // Статусы:
+    // 1 - "Не подтвержден"
+    // 2 - "На проверке темы"
+    // 3 - "Формирование команды"
+    // 4 - "Работа команды"
 }

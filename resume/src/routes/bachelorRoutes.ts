@@ -9,6 +9,9 @@ const controller = new bachelorController();
 router.route('')
     .post(controller.create)
 
+router.route('/userid')
+    .get(controller.getByUserId)
+
 router.route('/:id')
     .get(authMiddleware, controller.get)
 

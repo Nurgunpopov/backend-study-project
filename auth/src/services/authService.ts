@@ -1,56 +1,60 @@
-import { User } from '../models/auth';
-// import dataSource from '../config/data-source';
+import { User } from '../models/user.entity';
+import dataSource from '../config/data-source';
 import checkPassword from '../utils/checkPassword'
 import axios from 'axios'
 
 
 class UserService {
-    // private userRepository = dataSource.getRepository(User)
+    private userRepository = dataSource.getRepository(User)
     
     async create(userData: any): Promise<User | Error> {
-        const existingEmailUser = await User.findOne({ where: { email: userData.email } });
+        const existingEmailUser = await this.userRepository.findOne({ where: { email: userData.email } });
         if (existingEmailUser) {
             throw new Error('Email already exists');
         }
 
-        const user = await User.create(userData);
-        const results = await User.save(user)
-        
-        if (results) {
+        const user = this.userRepository.create(userData);
+        await this.userRepository.save(user)
+
+        const newUser = await this.userRepository.findOne({ where: { email: userData.email } }); 
+
+        if (newUser) {
             if (userData.role == 'MASTER') {
                 try {
-                    await axios.post('http://localhost:8001/api/master', {
-                            userId: results.id
+                    await axios.post('http://project:8001/api/master/', {
+                            userId: newUser.id
                         })
+                    return newUser;
                 } catch (error) {
-                    await User.delete({ id: results.id });
-                    throw new Error('Failed to create master');
+                    await this.userRepository.delete({ id: newUser.id });
+                    // throw new Error('Failed to create master');
+                    throw new Error(error.message)
                 }
             } else if (userData.role == 'BACHELOR') {
                 try {
-                    await axios.post('http://localhost:8002/api/bachelor', {
-                        userId: results.id
+                    await axios.post('http://resume:8002/api/bachelor', {
+                        userId: newUser.id
                     })
+                    return newUser;
                 } catch (error) {
-                    await User.delete({ id: results.id });
+                    await this.userRepository.delete({ id: newUser.id });
                     throw new Error('Failed to create master');
                 }
             }
-            return results;
         }
         throw new Error('User creation failed');
     }
 
     async checkPassword(email: string, password: string): Promise<any> {
-        const user = await User.findOne({ where: { email: email }})
+        const user = await this.userRepository.findOne({ where: { email: email }})
         if (user) {
             return { user: user, checkPassword: checkPassword(user, password) }
         }
         throw new Error("Login or password is incorrect!")
     }
 
-    async me(user: any) {
-        const currentUser = await User.findOneBy({ id: user.id })
+    async me(user: any): Promise<User | Error> {
+        const currentUser = await this.userRepository.findOneBy({ id: user.id })
         if (currentUser) {
             return currentUser
         }
@@ -60,23 +64,23 @@ class UserService {
     }
 
     // async getByID(id: number): Promise<User|Error> {
-    //     const user = await User.findByPk(id)
+    //     const user = await this.userRepository.findByPk(id)
     //     if (user) {
-    //         return user.toJSON()
+    //         return this.userRepository.toJSON()
     //     }
     //     throw new Error(`User with id ${id} not found`)
     // }
 
     // async update(userId: number, newUsername: string){
-    //     const existingUsernameUser = await User.findOne({ where: { username: newUsername } });
+    //     const existingUsernameUser = await this.userRepository.findOne({ where: { username: newUsername } });
     //     if (existingUsernameUser) {
     //         throw new Error('Username already exists');
     //     }
 
-    //     const user = await User.findByPk(userId)
+    //     const user = await this.userRepository.findByPk(userId)
     //     if (user) {
-    //         user.username = newUsername
-    //         await user.save()
+    //         this.userRepository.username = newUsername
+    //         await this.userRepository.save()
     //     } else {
     //         throw new Error(`User with id ${userId} not found`);
     //     }

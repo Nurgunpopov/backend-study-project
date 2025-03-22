@@ -1,76 +1,83 @@
-import { ILike, Raw } from "typeorm"
-
-import dataSource from '../config/data-source';
-import { Project } from '../models/project';
+import ProjectService from "../services/projectService"
 
 class projectController {
-    private projectRepository = dataSource.getRepository(Project)
+    private projectService: ProjectService;
+
+    constructor() {
+        this.projectService = new ProjectService();
+    }
 
     create = async (request: any, response: any) => {
-        const { body } = request
+        const projectData = request.body
+        const userId = request.user.id
 
-        const instance = this.projectRepository.create(body)
-        const result = await this.projectRepository.save(instance)
+        try {
+            const project = this.projectService.create(projectData, userId)
+            
+            response.send(project)
+        } catch (error: any) {
+            response.status(400).send({ "error": error.message });
+        }
+    }
 
-        return response.send(result)
+    getAll = async (request: any, response: any) => {
+        try {
+            const allProjects = await this.projectService.getAll();
+
+            response.send(allProjects);
+        } catch (error: any) {
+            response.status(400).send({ "error": error.message });
+        }
+    }
+
+    changeStatus = async (request: any, response: any) => {
+        const { params, body, user } = request;
+        const { id } = params;
+        const { status } = body
+        const { userId } = user.id
+        try {
+            const project = await this.projectService.changeStatus(id, userId, status);
+
+            response.send(project);
+        } catch (error: any) {
+            response.status(400).send({ "error": error.message });
+        }
+    }
+
+    get = async (request: any, response: any) => {
+        const { id } = request.params;
+        try {
+            const project = await this.projectService.getByID(id);
+
+            response.send(project);
+        } catch (error: any) {
+            response.status(400).send({ "error": error.message });
+        }
     }
 
     update = async (request: any, response: any) => {
         const { params, body } = request;
         const { id } = params;
+        try {
+            const project = await this.projectService.update(id, body);
 
-        const instance = await this.projectRepository.findOneBy({ id });
-
-        for (const key in body) {
-            instance[key] = body[key];
+            response.send(project);
+        } catch (error: any) {
+            response.status(400).send({ "error": error.message });
         }
-
-        const result = await this.projectRepository.save(instance);
-
-        return response.send(result);
     }
 
     delete = async (request: any, response: any) => {
-        const { params } = request;
-        const { id } = params;
+        const { id } = request.params;
+        try {
+            await this.projectService.delete(id);
 
-        const instance = await this.projectRepository.findOneBy({ id });
-        await this.projectRepository.remove(instance);
-
-        return response.status(204).send({});
-    }
-
-    get = async (request: any, response: any) => {
-        const { params } = request;
-        const { id } = params;
-
-        const result = await this.projectRepository.findOneBy({ id });
-
-        return response.send(result);
-    }
-
-    list = async (request: any, response: any) => {
-        const { query } = request
-
-        const findOptions: any = {}
-
-        if (query.subject) {
-            findOptions.subject = ILike(`%${query.subject}%`)
+            response.status(204).send({});
+        } catch (error: any) {
+            response.status(400).send({ "error": error.message });
         }
-
-        if (query.dateFrom && query.dateTo) {
-            findOptions.date = Raw((alias) => `${alias} > :dateFrom AND ${alias} < :dateTo`, {
-                dateFrom: query.dateFrom,
-                dateTo: query.dateTo
-            })
-        }
-
-        const result = await this.projectRepository.find({
-            where: findOptions
-        })
-
-        return response.send(result)
     }
+
 }
 
 export default projectController;

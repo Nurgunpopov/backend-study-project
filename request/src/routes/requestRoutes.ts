@@ -9,6 +9,12 @@ const controller = new requestController();
 router.route('')
     .post(authMiddleware, controller.create)
 
+router.route('/getAll')
+    .get(authMiddleware, controller.getAll)
+
+// router.route('/changeStatus/:id')
+//     .patch(authMiddleware, controller.changeStatus)
+
 router.route('/:id')
     .get(authMiddleware, controller.get)
 

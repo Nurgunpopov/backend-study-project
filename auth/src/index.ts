@@ -1,23 +1,21 @@
-import "reflect-metadata"
-import dotenv from "dotenv"
 import express from "express"
 import cors from "cors"
 import { createServer, Server } from "http"
+
 import routes from "./routes"
 import dataSource from "./config/data-source"
 
-dotenv.config()
 
 class App {
-    public port: any
-    public host: any
+    public port: number
+    public host: string
   
     private app: express.Application
     private server: Server
 
-    constructor() {
-        this.port = process.env.PORT
-        this.host = process.env.HOST
+    constructor(port = 8000, host = "localhost") {
+        this.port = port
+        this.host = host
     
         this.app = this.createApp()
         this.server = this.createServer()
