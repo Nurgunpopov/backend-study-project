@@ -7,7 +7,6 @@ class Settings {
     DB_USER = env.DB_USER || 'maindb'
     DB_PASSWORD = env.DB_PASSWORD || 'maindb'
     DB_ENTITIES = env.DB_ENTITIES
-    // DB_ENTITIES = env.DB_ENTITIES || 'dist/models/*.js'
 
     JWT_SECRET_KEY = env.JWT_SECRET_KEY || 'secret'
     JWT_TOKEN_TYPE = env.JWT_SECRET_KEY || 'Bearer'

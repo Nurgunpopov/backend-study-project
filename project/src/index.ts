@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import { createServer, Server } from "http"
+import { setupSwagger } from './swagger'
 
 import routes from "./routes"
 import dataSource from "./config/data-source"
@@ -23,12 +24,11 @@ class App {
     
     private createApp(): express.Application {
         const app = express()
-
         app.use(cors())
         app.use(express.json())
-
         app.use('/api', routes)
-    
+        setupSwagger(app)
+        
         return app
       }
     

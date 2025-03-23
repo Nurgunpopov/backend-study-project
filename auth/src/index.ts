@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import { createServer, Server } from "http"
+import { setupSwagger } from './swagger'
 
 import routes from "./routes"
 import dataSource from "./config/data-source"
@@ -9,7 +10,7 @@ import dataSource from "./config/data-source"
 class App {
     public port: number
     public host: string
-  
+
     private app: express.Application
     private server: Server
 
@@ -26,6 +27,7 @@ class App {
         app.use(cors())
         app.use(express.json())
         app.use('/api', routes)
+        setupSwagger(app)
     
         return app
       }

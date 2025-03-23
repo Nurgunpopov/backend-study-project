@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import { createServer, Server } from "http"
+import { setupSwagger } from './swagger'
 
 import routes from "./routes"
 import dataSource from "./config/data-source"
@@ -25,8 +26,8 @@ class App {
         const app = express()
         app.use(cors())
         app.use(express.json())
-        // включите роуты, когда они будут готовы
         app.use('/api', routes)
+        setupSwagger(app)
     
         return app
       }
