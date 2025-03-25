@@ -42,7 +42,6 @@ class requestService {
         } else {
             throw new Error('request creation failed');
         }
-        throw new Error('request creation failed');
     }
 
     async getAll(): Promise<any | Error> {

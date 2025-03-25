@@ -5,14 +5,17 @@ class bachelorService {
     private bachelorRepository = dataSource.getRepository(Bachelor)
 
     async create(bachelorData: any): Promise<Bachelor | Error> {
+        if (!bachelorData.userId) {
+            throw new Error('Invalid data: userId is required'); 
+        }
         const bachelor = this.bachelorRepository.create(bachelorData);
         await this.bachelorRepository.save(bachelor)
-        const newBachelor = await this.bachelorRepository.findOne({ where: { userId: bachelorData.userId } })
 
+        const newBachelor = await this.bachelorRepository.findOne({ where: { userId: bachelorData.userId } })
         if (newBachelor) {
             return newBachelor;
         }
-        throw new Error('bachelor creation failed');
+        // throw new Error('bachelor creation failed');
     }
 
     async getByUserId(userId: number): Promise<Bachelor | Error> {

@@ -5,6 +5,9 @@ class MasterService {
     private masterRepository = dataSource.getRepository(Master)
 
     async create(masterData: any): Promise<any | Error> {
+        if (!masterData.userId) {
+            throw new Error('Invalid data: userId is required'); 
+        }
         const master = this.masterRepository.create(masterData);
         await this.masterRepository.save(master)
 
@@ -12,7 +15,7 @@ class MasterService {
         if (newUser) {
             return newUser;
         }
-        throw new Error('Master creation failed');
+        // throw new Error('Master creation failed');
     }
 
     async getByID(id: number): Promise<any | Error> {

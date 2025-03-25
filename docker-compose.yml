@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres
+    container_name: db-postgres
     restart: always
     ports: 
       - 15432:5432
@@ -8,7 +9,28 @@ services:
       - ./dbs/postgres-data:/var/lib/postgresql/data
     env_file:
       - db.env
-  
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U maindb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmqctl status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   auth:
     image: express-auth-backend
     build:
@@ -21,7 +43,10 @@ services:
     env_file:
       - ./auth/.env.prod
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   project:
     image: express-project-backend
@@ -35,7 +60,10 @@ services:
     env_file:
       - ./project/.env.prod
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   resume:
     image: express-resume-backend
@@ -49,7 +77,10 @@ services:
     env_file:
       - ./resume/.env.prod
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   request:
     image: express-request-backend
@@ -63,4 +94,11 @@ services:
     env_file:
       - ./request/.env.prod
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+volumes:
+  rabbitmq_data:
+    driver: local

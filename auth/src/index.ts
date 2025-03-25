@@ -1,10 +1,10 @@
 import express from "express"
 import cors from "cors"
 import { createServer, Server } from "http"
-import { setupSwagger } from './swagger'
-
 import routes from "./routes"
 import dataSource from "./config/data-source"
+import { setupSwagger } from './swagger'
+import { connectToRabbitMQ } from "./rabbitmq"
 
 
 class App {
@@ -28,6 +28,7 @@ class App {
         app.use(express.json())
         app.use('/api', routes)
         setupSwagger(app)
+        connectToRabbitMQ()
     
         return app
       }
