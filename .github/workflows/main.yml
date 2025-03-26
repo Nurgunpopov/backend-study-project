@@ -50,5 +50,8 @@ jobs:
       - name: Copy files to destination
         run: rsync -av --progress ./ /var/www/apps/backend-study-project/
         
-      - name: Build and deploy containers
-        run: docker compose -f /var/www/apps/backend-study-project/docker-compose.yml up --build -d --force-recreate
+      - name: Build services
+        run: docker compose -f /var/www/apps/backend-study-project/docker-compose.yml build
+        
+      - name: Deploy services
+        run: docker compose -f /var/www/apps/backend-study-project/docker-compose.yml up -d --force-recreate
