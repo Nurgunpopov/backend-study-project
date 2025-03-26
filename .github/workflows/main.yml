@@ -40,6 +40,7 @@ jobs:
   deployment:
     name: Deployment
     runs-on: self-hosted
+    if: ${{ github.event_name == 'push' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
