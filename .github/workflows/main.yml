@@ -9,6 +9,7 @@ jobs:
   build-manual:
     name: Build Manual
     runs-on: self-hosted
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,26 +20,22 @@ jobs:
       - name: Build Docker containers
         run: docker compose -f /var/www/apps/backend-study-project/docker-compose.yml build
 
-    if: github.event_name == 'workflow_dispatch'
-
   start-manual:
     name: Start Manual
     needs: build-manual
     runs-on: self-hosted
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Start services
         run: docker compose -f /var/www/apps/backend-study-project/docker-compose.yml up -d
 
-    if: github.event_name == 'workflow_dispatch'
-
   restart-manual:
     name: Restart Manual
     runs-on: self-hosted
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Restart services
         run: docker compose -f /var/www/apps/backend-study-project/docker-compose.yml restart
-
-    if: github.event_name == 'workflow_dispatch'
 
   deployment:
     name: Deployment
