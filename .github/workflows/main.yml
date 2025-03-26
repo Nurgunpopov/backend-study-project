@@ -9,7 +9,7 @@ jobs:
   build-manual:
     name: Build Manual
     runs-on: self-hosted
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
   restart-manual:
     name: Restart Manual
     runs-on: self-hosted
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Restart services
         run: docker compose -f /var/www/apps/backend-study-project/docker-compose.yml restart
@@ -40,7 +40,7 @@ jobs:
   deployment:
     name: Deployment
     runs-on: self-hosted
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
